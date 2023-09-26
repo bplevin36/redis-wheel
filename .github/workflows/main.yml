@@ -21,10 +21,9 @@ jobs:
   strategy:
     matrix:
       image:
-        - "quay.io/pypa/manylinux1_x86_64"
+        #- "quay.io/pypa/manylinux1_x86_64"
         #- "quay.io/pypa/manylinux1_i686"
-        - "quay.io/pypa/manylinux2010_x86_64"
-        #- "quay.io/pypa/manylinux2010_i686"
+        - "quay.io/pypa/manylinux2014_x86_64"
       redis_version:
         # - "5.0.10"
         # - "6.0.9"
@@ -33,7 +32,7 @@ jobs:
         - "3.9"
       include:
         - python_version: "3.9"
-          python_abi: "cp39"
+          abi_tag: "cp39-cp39"
 
   container:
     image: ${{ matrix.image }}
@@ -48,8 +47,9 @@ jobs:
       run: find tools/ -type f -iname "*.sh" -exec chmod +x {} \;
     - name: Setup poetry
       run: |
-        curl -sSL https://install.python-poetry.org | python3 -
-        update-alternatives --install /usr/bin/poetry poetry $HOME/.poetry/bin/poetry 0
+        export POETRY_HOME=/opt/poetry
+        curl -sSL https://install.python-poetry.org | POETRY_VERSION=1.6.1 /opt/python/${{ matrix.abi_tag }}/bin/python -
+        update-alternatives --install /usr/bin/poetry poetry $POETRY_HOME/bin/poetry 0
         poetry --version
         poetry config virtualenvs.create false
 
@@ -61,7 +61,7 @@ jobs:
         tools/distrib.sh \
           $(pwd) \
           ${{ matrix.redis_version }} \
-          ${{ matrix.python_abi }} \
+          ${{ matrix.abi_tag }} \
           $(echo ${{ matrix.image }} | awk -F'/' '{print $(NF)}')
 
     - name: Upload distribution
