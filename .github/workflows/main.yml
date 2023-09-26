@@ -48,7 +48,7 @@ jobs:
       run: find tools/ -type f -iname "*.sh" -exec chmod +x {} \;
     - name: Setup poetry
       run: |
-        curl -sSL https://install.python-poetry.org | python -
+        curl -sSL https://install.python-poetry.org | python3 -
         update-alternatives --install /usr/bin/poetry poetry $HOME/.poetry/bin/poetry 0
         poetry --version
         poetry config virtualenvs.create false
