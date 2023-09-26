@@ -105,4 +105,4 @@ ENV/
 data/
 .*DS_Store
 
-redis_server/bin/
+redis_wheel/bin/

@@ -21,19 +21,20 @@ jobs:
   strategy:
     matrix:
       image:
-        # - "quay.io/pypa/manylinux1_x86_64"
-        # - "quay.io/pypa/manylinux1_i686"
+        - "quay.io/pypa/manylinux1_x86_64"
+        - "quay.io/pypa/manylinux1_i686"
         - "quay.io/pypa/manylinux2010_x86_64"
         - "quay.io/pypa/manylinux2010_i686"
       python_abi:
         # - "cp35-cp35m"
-        - "cp36-cp36m"
-        - "cp37-cp37m"
+        # - "cp36-cp36m"
+        # - "cp37-cp37m"
         - "cp38-cp38"
         - "cp39-cp39"
       redis_version:
-        - "5.0.10"
-        - "6.0.9"
+        # - "5.0.10"
+        # - "6.0.9"
+        - "6.2.5"
   container:
     image: ${{ matrix.image }}
   steps:
@@ -63,7 +64,7 @@ jobs:
         poetry config virtualenvs.create false
 
     - name: Build redis
-      run: tools/build.sh ${{ matrix.redis_version }} redis_server/bin
+      run: tools/build.sh ${{ matrix.redis_version }} redis_wheel/bin
 
     - name: Build distribution
       run: |
@@ -107,7 +108,7 @@ jobs:
         poetry --version
 
     - name: Build redis
-      run: tools/build.sh ${{ matrix.redis_version }} redis_server/bin
+      run: tools/build.sh ${{ matrix.redis_version }} redis_wheel/bin
 
     - name: Build distribution
       run: |

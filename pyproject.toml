@@ -1,13 +1,13 @@
 [tool.poetry]
-name = "redis-server"
-version = "0.1.0"
+name = "redis-wheel"
+version = "6.2.5"
 description = ""
 license = "MIT"
-authors = ["huntzhan <huntzhan.dev@gmail.com>"]
+authors = ["Benjamin Levin <bplevin36@gmail.com>"]
 readme = "README.md"
-repository = "https://github.com/private-pypi/redis-server"
+repository = "https://github.com/bplevin36/redis-wheel"
 keywords = ["redis", "server"]
-include ["redis_server/bin/*"]
+include = ["redis_wheel/bin/*"]
 
 [tool.poetry.dependencies]
 python = "^3"

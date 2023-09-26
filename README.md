@@ -1,15 +1,16 @@
-# redis-server
+# redis-wheel
 
 To install the pre-compiled Redis binaries:
 
 ```sh
-pip install redis-server==<redis-version>
+pip install redis-wheel==<redis-version>
 ```
 
 Supported `redis-version`:
 
 - `5.0.7`
 - `6.0rc2`
+- `6.2.5`
 
 Supported platforms:
 
@@ -23,12 +24,13 @@ Supported python versions:
 - `cp36`
 - `cp37`
 - `cp38`
+- `cp39`
 
 To get the paths of pre-compiled Redis binaries:
 
 ```python
-import redis_server
+import redis_wheel
 
-redis_server.REDIS_SERVER_PATH  # redis-server
-redis_server.REDIS_CLI_PATH     # redis-cli
+redis_wheel.REDIS_SERVER_PATH  # redis-server
+redis_wheel.REDIS_CLI_PATH     # redis-cli
 ```

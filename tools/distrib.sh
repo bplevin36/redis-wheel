@@ -36,9 +36,9 @@ cd $PKG_ROOT && poetry build -f wheel
 mv "${PKG_ROOT}/pyproject.toml.bak" "${PKG_ROOT}/pyproject.toml"
 
 # Rename.
-POETRY_BUILT_WHL="${PKG_ROOT}/dist/redis_server-${REDIS_VERSION}-py3-none-any.whl"
+POETRY_BUILT_WHL="${PKG_ROOT}/dist/redis_wheel-${REDIS_VERSION}-py3-none-any.whl"
 
 BUILD_TAG=$(date -u "+%Y%m%d%H%M")
-RENAMED_WHL="${PKG_ROOT}/dist/redis_server-${REDIS_VERSION}-${BUILD_TAG}-${PYTHON_ABI}-${PLATFORM_TAG}.whl"
+RENAMED_WHL="${PKG_ROOT}/dist/redis_wheel-${REDIS_VERSION}-${BUILD_TAG}-${PYTHON_ABI}-${PLATFORM_TAG}.whl"
 mv $POETRY_BUILT_WHL $RENAMED_WHL
 echo $RENAMED_WHL
