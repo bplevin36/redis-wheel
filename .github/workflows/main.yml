@@ -8,7 +8,7 @@ jobs:
  checkout:
   runs-on: ubuntu-latest
   steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Upload checkout
       uses: actions/upload-artifact@v1
       with:
@@ -22,19 +22,19 @@ jobs:
     matrix:
       image:
         - "quay.io/pypa/manylinux1_x86_64"
-        - "quay.io/pypa/manylinux1_i686"
+        #- "quay.io/pypa/manylinux1_i686"
         - "quay.io/pypa/manylinux2010_x86_64"
-        - "quay.io/pypa/manylinux2010_i686"
-      python_abi:
-        # - "cp35-cp35m"
-        # - "cp36-cp36m"
-        # - "cp37-cp37m"
-        - "cp38-cp38"
-        - "cp39-cp39"
+        #- "quay.io/pypa/manylinux2010_i686"
       redis_version:
         # - "5.0.10"
         # - "6.0.9"
         - "6.2.5"
+      python_version:
+        - "3.9"
+      include:
+        - python_version: "3.9"
+          python_abi: "cp39"
+
   container:
     image: ${{ matrix.image }}
   steps:
@@ -47,17 +47,12 @@ jobs:
     - name: Fix +x permission
       run: find tools/ -type f -iname "*.sh" -exec chmod +x {} \;
 
-    - name: Setup python/pip/poetry
+    - name: Setup python ${{ matrix.python_version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Setup poetry
       run: |
-        rm -f /usr/bin/python
-        update-alternatives --install /usr/bin/python python /opt/python/${{ matrix.python_abi }}/bin/python 0
-        python --version
-
-        rm -f /usr/bin/pip
-        update-alternatives --install /usr/bin/pip pip /opt/python/${{ matrix.python_abi }}/bin/pip 0
-        pip install -U pip
-        pip --version
-
         curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
         update-alternatives --install /usr/bin/poetry poetry $HOME/.poetry/bin/poetry 0
         poetry --version
@@ -86,8 +81,9 @@ jobs:
   strategy:
     matrix:
       redis_version:
-        - "5.0.10"
-        - "6.0.9"
+        #- "5.0.10"
+        #- "6.0.9"
+        - "6.2.5"
   steps:
     - name: Download checkout
       uses: actions/download-artifact@v1
