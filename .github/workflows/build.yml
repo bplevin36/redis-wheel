@@ -22,12 +22,8 @@ jobs:
   strategy:
     matrix:
       image:
-        #- "quay.io/pypa/manylinux1_x86_64"
-        #- "quay.io/pypa/manylinux1_i686"
         - "quay.io/pypa/manylinux2014_x86_64"
       redis_version:
-        # - "5.0.10"
-        # - "6.0.9"
         - "6.2.5"
       python_version:
         - "3.9"
@@ -80,8 +76,6 @@ jobs:
   strategy:
     matrix:
       redis_version:
-        #- "5.0.10"
-        #- "6.0.9"
         - "6.2.5"
       python_version:
         - "3.9"
