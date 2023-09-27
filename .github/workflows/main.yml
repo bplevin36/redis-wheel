@@ -10,7 +10,7 @@ jobs:
   steps:
     - uses: actions/checkout@v4
     - name: Upload checkout
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: checkout
         path: .
@@ -38,7 +38,7 @@ jobs:
     image: ${{ matrix.image }}
   steps:
     - name: Download checkout
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v3
       with:
         name: checkout
         path: .
@@ -65,7 +65,7 @@ jobs:
           $(echo ${{ matrix.image }} | awk -F'/' '{print $(NF)}')
 
     - name: Upload distribution
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: distribution
         path: dist/
@@ -86,7 +86,7 @@ jobs:
           abi_tag: "cp39-cp39"
   steps:
     - name: Download checkout
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v3
       with:
         name: checkout
         path: .
@@ -99,13 +99,8 @@ jobs:
       with:
         python-version: ${{ matrix.python_version }}
 
-    - name: Setup poetry
-      run: |
-        export POETRY_HOME=/opt/poetry
-        curl -sSL https://install.python-poetry.org | POETRY_VERSION=1.6.1 python3 -
-        update-alternatives --install /usr/bin/poetry poetry $POETRY_HOME/bin/poetry 0
-        poetry --version
-        poetry config virtualenvs.create false
+    - name: Install poetry
+      run: pipx install poetry
 
     - name: Build redis
       run: tools/build.sh ${{ matrix.redis_version }} redis_wheel/bin
@@ -119,7 +114,7 @@ jobs:
           macosx_11_0_x86_64
 
     - name: Upload distribution
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: distribution
         path: dist/
@@ -129,7 +124,7 @@ jobs:
  # runs-on: ubuntu-latest
  # steps:
  #   - name: Download distribution
- #     uses: actions/download-artifact@v1
+ #     uses: actions/download-artifact@v3
  #     with:
  #       name: distribution
  #       path: dist/
