@@ -72,13 +72,18 @@ jobs:
 
  build-macos:
   needs: checkout
-  runs-on: macos-10.15
+  runs-on: macOS-11
   strategy:
     matrix:
       redis_version:
         #- "5.0.10"
         #- "6.0.9"
         - "6.2.5"
+      python_version:
+        - "3.9"
+      include:
+        - python_version: "3.9"
+          abi_tag: "cp39-cp39"
   steps:
     - name: Download checkout
       uses: actions/download-artifact@v1
@@ -90,13 +95,17 @@ jobs:
       run: find tools/ -type f -iname "*.sh" -exec chmod +x {} \;
 
     - name: Setup python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python_version }}
 
-    - name: Setup pip/poetry
+    - name: Setup poetry
       run: |
-        pip install -U pip poetry
-        pip --version
+        export POETRY_HOME=/opt/poetry
+        curl -sSL https://install.python-poetry.org | POETRY_VERSION=1.6.1 python3 -
+        update-alternatives --install /usr/bin/poetry poetry $POETRY_HOME/bin/poetry 0
         poetry --version
+        poetry config virtualenvs.create false
 
     - name: Build redis
       run: tools/build.sh ${{ matrix.redis_version }} redis_wheel/bin
@@ -106,8 +115,8 @@ jobs:
         tools/distrib.sh \
           $(pwd) \
           ${{ matrix.redis_version }} \
-          py3-none \
-          macosx_10_15_x86_64
+          ${{ matrix.abi_tag }} \
+          macosx_11_0_x86_64
 
     - name: Upload distribution
       uses: actions/upload-artifact@v1
@@ -115,28 +124,29 @@ jobs:
         name: distribution
         path: dist/
 
- publish:
-  needs: [build-linux, build-macos]
-  runs-on: ubuntu-latest
-  steps:
-    - name: Download distribution
-      uses: actions/download-artifact@v1
-      with:
-        name: distribution
-        path: dist/
-
-    - name: Setup python
-      uses: actions/setup-python@v1
-
-    - name: Setup pip/twine
-      run: |
-        pip install -U pip twine
-        pip --version
-        twine --version
-
-    - name: Upload distributions
-      run: |
-        twine upload dist/*
-      env:
-        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+ #publish:
+ # needs: [build-linux, build-macos]
+ # runs-on: ubuntu-latest
+ # steps:
+ #   - name: Download distribution
+ #     uses: actions/download-artifact@v1
+ #     with:
+ #       name: distribution
+ #       path: dist/
+#
+ #   - name: Setup python
+ #     uses: actions/setup-python@v1
+#
+ #   - name: Setup pip/twine
+ #     run: |
+ #       pip install -U pip twine
+ #       pip --version
+ #       twine --version
+#
+ #   - name: Upload distributions
+ #     run: |
+ #       twine upload dist/*
+ #     env:
+ #       TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+ #       TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+#
