@@ -5,7 +5,6 @@ description = "Wheels that bundle precompiled redis-server and redis-cli binarie
 license = "MIT"
 authors = ["Benjamin Levin <bplevin36@gmail.com>"]
 readme = "README.md"
-requires-python = ">=3.9"
 repository = "https://github.com/bplevin36/redis-wheel"
 keywords = ["redis", "server"]
 include = ["redis_wheel/bin/*"]
