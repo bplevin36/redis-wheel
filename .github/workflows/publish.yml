@@ -13,6 +13,7 @@ jobs:
 
   pypi-publish:
     name: Publish to PyPi
+    needs: run-build-workflow
     runs-on: ubuntu-latest
     environment: release
     permissions:

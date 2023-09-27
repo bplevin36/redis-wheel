@@ -6,24 +6,17 @@ To install the pre-compiled Redis binaries:
 pip install redis-wheel==<redis-version>
 ```
 
-Supported `redis-version`:
+Supported versions of Redis:
 
-- `5.0.7`
-- `6.0rc2`
 - `6.2.5`
 
 Supported platforms:
 
-- `manylinux2010_x86_64`
-- `manylinux2010_i686`
-- `macosx_10_15_x86_64`
+- `manylinux2014_x86_64`
+- `macosx_11_0_x86_64`
 
 Supported python versions:
 
-- `cp35`
-- `cp36`
-- `cp37`
-- `cp38`
 - `cp39`
 
 To get the paths of pre-compiled Redis binaries:
