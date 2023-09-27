@@ -1,7 +1,8 @@
-name: build-and-publish
+name: Build wheels
 
 on:
  push:
+ workflow_call:
 
 jobs:
 
@@ -118,30 +119,3 @@ jobs:
       with:
         name: distribution
         path: dist/
-
- #publish:
- # needs: [build-linux, build-macos]
- # runs-on: ubuntu-latest
- # steps:
- #   - name: Download distribution
- #     uses: actions/download-artifact@v3
- #     with:
- #       name: distribution
- #       path: dist/
-#
- #   - name: Setup python
- #     uses: actions/setup-python@v1
-#
- #   - name: Setup pip/twine
- #     run: |
- #       pip install -U pip twine
- #       pip --version
- #       twine --version
-#
- #   - name: Upload distributions
- #     run: |
- #       twine upload dist/*
- #     env:
- #       TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
- #       TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-#
