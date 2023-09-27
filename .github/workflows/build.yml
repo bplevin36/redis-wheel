@@ -58,8 +58,8 @@ jobs:
     - name: Build redis
       run: tools/build.sh ${{ matrix.redis_version }} redis_wheel/bin
 
-    - name: List dist/
-      run: ls -R dist/
+    - name: List dir for sanity checking
+      run: ls -R
     - name: Build distribution
       run: |
         tools/distrib.sh \
