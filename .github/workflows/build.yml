@@ -37,14 +37,14 @@ jobs:
 
   container:
     image: ${{ matrix.image }}
-    options: --user 1001
   steps:
     - name: Download checkout
       uses: actions/download-artifact@v3
       with:
         name: checkout
         path: .
-
+    - name: Fix git safe dir
+      run: git config --global --add safe.directory $(pwd)
     - name: Fix +x permission
       run: find tools/ -type f -iname "*.sh" -exec chmod +x {} \;
     - name: Setup poetry
