@@ -30,12 +30,12 @@ jobs:
         - "6.2.5"
       python_version:
         - "3.9"
-#        - "3.11"
+        - "3.11"
       include:
         - python_version: "3.9"
           abi_tag: "cp39-cp39"
-#        - python_version: "3.11"
-#          abi_tag: "cp311-cp311"
+        - python_version: "3.11"
+          abi_tag: "cp311-cp311"
 
   container:
     image: ${{ matrix.image }}
@@ -73,7 +73,7 @@ jobs:
     - name: Upload distribution
       uses: actions/upload-artifact@v4
       with:
-        name: distribution-linux-{{ matrix.python_version }}
+        name: distribution-linux-${{ matrix.python_version }}
         path: dist/
 
 #  build-macos-x64:
@@ -135,12 +135,12 @@ jobs:
         - "6.2.5"
       python_version:
         - "3.9"
-#        - "3.11"
+        - "3.11"
       include:
         - python_version: "3.9"
           abi_tag: "cp39-cp39"
-#        - python_version: "3.11"
-#          abi_tag: "cp311-cp311"
+        - python_version: "3.11"
+          abi_tag: "cp311-cp311"
   steps:
     - name: Download checkout
       uses: actions/download-artifact@v4
@@ -158,9 +158,6 @@ jobs:
 
     - name: List available Xcode versions
       run: ls /Applications | grep Xcode
-
-    - name: Show current version of Xcode
-      run: xcodebuild -version
 
     - name: Set up Xcode version
       run: sudo xcode-select -s /Applications/Xcode_14.3.1.app/Contents/Developer      
@@ -185,5 +182,5 @@ jobs:
     - name: Upload distribution
       uses: actions/upload-artifact@v4
       with:
-        name: distribution-macos-arm-{{ matrix.python_version }}
+        name: distribution-macos-arm-${{ matrix.python_version }}
         path: dist/
