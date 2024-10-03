@@ -14,7 +14,7 @@ jobs:
   steps:
     - uses: actions/checkout@v4
     - name: Upload checkout
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: checkout
         path: .
@@ -41,7 +41,7 @@ jobs:
     image: ${{ matrix.image }}
   steps:
     - name: Download checkout
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: checkout
         path: .
@@ -71,9 +71,9 @@ jobs:
           $(echo ${{ matrix.image }} | awk -F'/' '{print $(NF)}')
 
     - name: Upload distribution
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: distribution
+        name: distribution-linux-{{ matrix.python_version }}
         path: dist/
 
 #  build-macos-x64:
@@ -93,7 +93,7 @@ jobs:
 #           abi_tag: "cp311-cp311"
 #   steps:
 #     - name: Download checkout
-#       uses: actions/download-artifact@v3
+#       uses: actions/download-artifact@v4
 #       with:
 #         name: checkout
 #         path: .
@@ -121,9 +121,9 @@ jobs:
 #           macosx_14_0_x86_64
 
 #     - name: Upload distribution
-#       uses: actions/upload-artifact@v3
+#       uses: actions/upload-artifact@v4
 #       with:
-#         name: distribution
+#         name: distribution-macos-x64-{{ matrix.python_version }}
 #         path: dist/
 
  build-macos-arm:
@@ -143,7 +143,7 @@ jobs:
 #          abi_tag: "cp311-cp311"
   steps:
     - name: Download checkout
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: checkout
         path: .
@@ -171,7 +171,7 @@ jobs:
           macosx_14_0_arm64
 
     - name: Upload distribution
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: distribution
+        name: distribution-macos-arm-{{ matrix.python_version }}
         path: dist/
