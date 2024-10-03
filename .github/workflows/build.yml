@@ -4,6 +4,7 @@ on:
  push:
   branches:
     - master
+    - paulan/new_builds
  workflow_call:
 
 jobs:
@@ -29,9 +30,12 @@ jobs:
         - "6.2.5"
       python_version:
         - "3.9"
+#        - "3.11"
       include:
         - python_version: "3.9"
           abi_tag: "cp39-cp39"
+#        - python_version: "3.11"
+#          abi_tag: "cp311-cp311"
 
   container:
     image: ${{ matrix.image }}
@@ -72,18 +76,71 @@ jobs:
         name: distribution
         path: dist/
 
- build-macos:
+#  build-macos-x64:
+#   needs: checkout
+#   runs-on: macOS-14-large
+#   strategy:
+#     matrix:
+#       redis_version:
+#         - "6.2.5"
+#       python_version:
+#         - "3.9"
+#         - "3.11"
+#       include:
+#         - python_version: "3.9"
+#           abi_tag: "cp39-cp39"
+#         - python_version: "3.11"
+#           abi_tag: "cp311-cp311"
+#   steps:
+#     - name: Download checkout
+#       uses: actions/download-artifact@v3
+#       with:
+#         name: checkout
+#         path: .
+
+#     - name: Fix +x permission
+#       run: find tools/ -type f -iname "*.sh" -exec chmod +x {} \;
+
+#     - name: Setup python
+#       uses: actions/setup-python@v4
+#       with:
+#         python-version: ${{ matrix.python_version }}
+
+#     - name: Install poetry
+#       run: pipx install poetry
+
+#     - name: Build redis
+#       run: tools/build.sh ${{ matrix.redis_version }} redis_wheel/bin
+
+#     - name: Build distribution
+#       run: |
+#         tools/distrib.sh \
+#           $(pwd) \
+#           ${{ matrix.redis_version }} \
+#           ${{ matrix.abi_tag }} \
+#           macosx_14_0_x86_64
+
+#     - name: Upload distribution
+#       uses: actions/upload-artifact@v3
+#       with:
+#         name: distribution
+#         path: dist/
+
+ build-macos-arm:
   needs: checkout
-  runs-on: macOS-11
+  runs-on: macOS-14
   strategy:
     matrix:
       redis_version:
         - "6.2.5"
       python_version:
         - "3.9"
+#        - "3.11"
       include:
         - python_version: "3.9"
           abi_tag: "cp39-cp39"
+#        - python_version: "3.11"
+#          abi_tag: "cp311-cp311"
   steps:
     - name: Download checkout
       uses: actions/download-artifact@v3
@@ -111,7 +168,7 @@ jobs:
           $(pwd) \
           ${{ matrix.redis_version }} \
           ${{ matrix.abi_tag }} \
-          macosx_11_0_x86_64
+          macosx_14_0_arm64
 
     - name: Upload distribution
       uses: actions/upload-artifact@v3
