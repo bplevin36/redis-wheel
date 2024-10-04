@@ -4,7 +4,6 @@ on:
  push:
   branches:
     - master
-    - paulan/new_builds
  workflow_call:
 
 jobs:
