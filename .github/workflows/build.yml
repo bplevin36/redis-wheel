@@ -134,7 +134,7 @@ jobs:
 
  build-macos-arm:
   needs: checkout
-  # macOS-13 is ARM runner!
+  # macOS-14 is ARM runner!
   runs-on: macOS-14
   strategy:
     matrix:
