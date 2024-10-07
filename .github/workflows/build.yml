@@ -13,7 +13,7 @@ jobs:
   steps:
     - uses: actions/checkout@v4
     - name: Upload checkout
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: checkout
         path: .
@@ -24,20 +24,23 @@ jobs:
   strategy:
     matrix:
       image:
-        - "quay.io/pypa/manylinux2014_x86_64"
+        - "quay.io/pypa/manylinux_2_28_x86_64"
       redis_version:
         - "6.2.5"
       python_version:
         - "3.9"
+        - "3.11"
       include:
         - python_version: "3.9"
           abi_tag: "cp39-cp39"
+        - python_version: "3.11"
+          abi_tag: "cp311-cp311"
 
   container:
     image: ${{ matrix.image }}
   steps:
     - name: Download checkout
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: checkout
         path: .
@@ -67,14 +70,15 @@ jobs:
           $(echo ${{ matrix.image }} | awk -F'/' '{print $(NF)}')
 
     - name: Upload distribution
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: distribution
+        name: distribution-linux-${{ matrix.python_version }}
         path: dist/
 
- build-macos:
+ build-macos-x64:
   needs: checkout
-  runs-on: macOS-11
+  # macOS-13 is Intel runner!
+  runs-on: macOS-13
   strategy:
     matrix:
       redis_version:
@@ -86,7 +90,7 @@ jobs:
           abi_tag: "cp39-cp39"
   steps:
     - name: Download checkout
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: checkout
         path: .
@@ -95,10 +99,19 @@ jobs:
       run: find tools/ -type f -iname "*.sh" -exec chmod +x {} \;
 
     - name: Setup python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python_version }}
 
+    - name: List available Xcode versions
+      run: ls /Applications | grep Xcode
+
+    - name: Set up Xcode version
+      run: sudo xcode-select -s /Applications/Xcode_14.3.1.app/Contents/Developer      
+
+    - name: Show current version of Xcode
+      run: xcodebuild -version
+  
     - name: Install poetry
       run: pipx install poetry
 
@@ -111,10 +124,70 @@ jobs:
           $(pwd) \
           ${{ matrix.redis_version }} \
           ${{ matrix.abi_tag }} \
-          macosx_11_0_x86_64
+          macosx_13_0_x86_64
 
     - name: Upload distribution
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: distribution
+        name: distribution-macos-x64-${{ matrix.python_version }}
+        path: dist/
+
+ build-macos-arm:
+  needs: checkout
+  # macOS-14 is ARM runner!
+  runs-on: macOS-14
+  strategy:
+    matrix:
+      redis_version:
+        - "6.2.5"
+      python_version:
+        - "3.9"
+        - "3.11"
+      include:
+        - python_version: "3.9"
+          abi_tag: "cp39-cp39"
+        - python_version: "3.11"
+          abi_tag: "cp311-cp311"
+  steps:
+    - name: Download checkout
+      uses: actions/download-artifact@v4
+      with:
+        name: checkout
+        path: .
+
+    - name: Fix +x permission
+      run: find tools/ -type f -iname "*.sh" -exec chmod +x {} \;
+
+    - name: Setup python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python_version }}
+
+    - name: List available Xcode versions
+      run: ls /Applications | grep Xcode
+
+    - name: Set up Xcode version
+      run: sudo xcode-select -s /Applications/Xcode_14.3.1.app/Contents/Developer      
+
+    - name: Show current version of Xcode
+      run: xcodebuild -version
+    
+    - name: Install poetry
+      run: pipx install poetry
+
+    - name: Build redis
+      run: tools/build.sh ${{ matrix.redis_version }} redis_wheel/bin
+
+    - name: Build distribution
+      run: |
+        tools/distrib.sh \
+          $(pwd) \
+          ${{ matrix.redis_version }} \
+          ${{ matrix.abi_tag }} \
+          macosx_14_0_arm64
+
+    - name: Upload distribution
+      uses: actions/upload-artifact@v4
+      with:
+        name: distribution-macos-arm-${{ matrix.python_version }}
         path: dist/
