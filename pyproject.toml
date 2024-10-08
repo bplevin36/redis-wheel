@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "redis-wheel"
-version = "0.1.0"
+version = "6.2.5.1"
 description = "Wheels that bundle precompiled redis-server and redis-cli binaries for the appropriate platform"
 license = "MIT"
 authors = ["Benjamin Levin <bplevin36@gmail.com>"]

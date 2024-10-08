@@ -4,10 +4,15 @@ on:
  push:
   branches:
     - master
+ pull_request:
  workflow_call:
 
-jobs:
+env:
+  # set PACKAGE_VERSION in a central place, needs to match pyproject.toml
+  REDIS_VERSION: "6.2.5"
+  PACKAGE_VERSION: "6.2.5.1"
 
+jobs:
  checkout:
   runs-on: ubuntu-latest
   steps:
@@ -25,8 +30,6 @@ jobs:
     matrix:
       image:
         - "quay.io/pypa/manylinux_2_28_x86_64"
-      redis_version:
-        - "6.2.5"
       python_version:
         - "3.9"
         - "3.11"
@@ -57,7 +60,7 @@ jobs:
         poetry config virtualenvs.create false
 
     - name: Build redis
-      run: tools/build.sh ${{ matrix.redis_version }} redis_wheel/bin
+      run: tools/build.sh ${REDIS_VERSION} redis_wheel/bin
 
     - name: List dir for sanity checking
       run: ls -R
@@ -65,7 +68,7 @@ jobs:
       run: |
         tools/distrib.sh \
           $(pwd) \
-          ${{ matrix.redis_version }} \
+          ${PACKAGE_VERSION} \
           ${{ matrix.abi_tag }} \
           $(echo ${{ matrix.image }} | awk -F'/' '{print $(NF)}')
 
@@ -81,8 +84,6 @@ jobs:
   runs-on: macOS-13
   strategy:
     matrix:
-      redis_version:
-        - "6.2.5"
       python_version:
         - "3.9"
       include:
@@ -116,13 +117,13 @@ jobs:
       run: pipx install poetry
 
     - name: Build redis
-      run: tools/build.sh ${{ matrix.redis_version }} redis_wheel/bin
+      run: tools/build.sh ${REDIS_VERSION} redis_wheel/bin
 
     - name: Build distribution
       run: |
         tools/distrib.sh \
           $(pwd) \
-          ${{ matrix.redis_version }} \
+          ${PACKAGE_VERSION} \
           ${{ matrix.abi_tag }} \
           macosx_13_0_x86_64
 
@@ -138,8 +139,6 @@ jobs:
   runs-on: macOS-14
   strategy:
     matrix:
-      redis_version:
-        - "6.2.5"
       python_version:
         - "3.9"
         - "3.11"
@@ -176,13 +175,13 @@ jobs:
       run: pipx install poetry
 
     - name: Build redis
-      run: tools/build.sh ${{ matrix.redis_version }} redis_wheel/bin
+      run: tools/build.sh ${REDIS_VERSION} redis_wheel/bin
 
     - name: Build distribution
       run: |
         tools/distrib.sh \
           $(pwd) \
-          ${{ matrix.redis_version }} \
+          ${PACKAGE_VERSION} \
           ${{ matrix.abi_tag }} \
           macosx_14_0_arm64
 
